@@ -1,4 +1,4 @@
-package com.api.discord.backend;
+package com.discord_bot.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

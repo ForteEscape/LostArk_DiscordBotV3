@@ -1,4 +1,4 @@
-package com.api.discord.backend;
+package com.discord_bot.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
