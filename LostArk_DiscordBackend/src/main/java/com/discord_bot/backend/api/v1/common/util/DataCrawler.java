@@ -1,4 +1,4 @@
-package com.discord_bot.backend.common.util;
+package com.discord_bot.backend.api.v1.common.util;
 
 public interface DataCrawler {
 

@@ -1,5 +1,6 @@
-package com.discord_bot.backend.common.util;
+package com.discord_bot.backend.api.v1.common.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Component
+@Slf4j
 public class DataCrawlerImpl implements DataCrawler {
 
     private static final String KEY_PREFIX = "Bearer ";
@@ -26,23 +28,38 @@ public class DataCrawlerImpl implements DataCrawler {
     @Value("${api.url.news}")
     private String NEWS_URL;
 
+    @Value("${api.context-root}")
+    private String CONTEXT_PATH;
+
     @Override
     public String getCharacterInfo(String characterName) {
-        String urlString = CHARACTER_ARMOR_URL + "?characterName=" + characterName;
+        String urlString = CONTEXT_PATH + CHARACTER_ARMOR_URL + "?characterName=" + characterName;
 
         return parsingData(urlString);
     }
 
     @Override
     public String getCharacterGroup(String characterName) {
-        String urlString = CHARACTER_URL + "?characterName=" + characterName;
+        String urlString = CONTEXT_PATH + CHARACTER_URL + "?characterName=" + characterName;
 
         return parsingData(urlString);
     }
 
     @Override
     public String getGameNotices(String searchTitle, String noticeType) {
-        String urlString = NEWS_URL + "?searchTitle=" + searchTitle + "&noticeType=" + noticeType;
+        String urlString;
+
+        if (searchTitle.isBlank() && noticeType.isBlank()) {
+            urlString = CONTEXT_PATH + NEWS_URL + "/notices";
+        } else {
+            if(searchTitle.isBlank()) {
+                urlString = CONTEXT_PATH + NEWS_URL + "/notices?type=" + noticeType;
+            } else if(noticeType.isBlank()) {
+                urlString = CONTEXT_PATH + NEWS_URL + "/notices?searchText=" + searchTitle;
+            } else {
+                urlString = CONTEXT_PATH + NEWS_URL + "/notices?searchText=" + searchTitle + "&type=" + noticeType;
+            }
+        }
 
         return parsingData(urlString);
     }
@@ -54,11 +71,14 @@ public class DataCrawlerImpl implements DataCrawler {
 
     private String parsingData(String urlString) {
         try {
+            log.info("url " + urlString);
+
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("ContentType", "application/json");
+
             conn.setRequestProperty("Authorization", KEY_PREFIX + SERVICE_KEY);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod("GET");
 
             int responseCode = conn.getResponseCode();
 
@@ -83,6 +103,7 @@ public class DataCrawlerImpl implements DataCrawler {
             return sb.toString();
 
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
