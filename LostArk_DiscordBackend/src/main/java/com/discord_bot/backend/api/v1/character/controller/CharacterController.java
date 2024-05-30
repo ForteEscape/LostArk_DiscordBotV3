@@ -32,8 +32,9 @@ public class CharacterController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @GetMapping
-    public ResponseEntity<List<CharacterResponse.CharacterInfo>> getCharacterList(@RequestParam("characterName") String characterName,
-                                                                                  @RequestParam("filter") String filter) {
+    public ResponseEntity<List<CharacterResponse.CharacterInfo>> getCharacterList(
+            @RequestParam(value = "characterName") String characterName,
+            @RequestParam(value = "filter", required = false) String filter) {
         List<CharacterResponse.CharacterInfo> characterList = characterService.getCharacterList(characterName, filter);
         return ResponseEntity.ok(characterList);
     }

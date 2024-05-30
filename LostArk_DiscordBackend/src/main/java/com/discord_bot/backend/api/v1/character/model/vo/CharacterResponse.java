@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record CharacterResponse() {
 
     @Schema(description = "원정대 캐릭터 정보 api")
-    public static record CharacterInfo(
+    public record CharacterInfo(
             @Schema(name = "server", description = "캐릭터의 소속 서버를 나타냅니다.", example = "실리안")
             @JsonProperty(value = "ServerName")
             String server,
@@ -29,8 +29,7 @@ public record CharacterResponse() {
 
             @Schema(name = "itemMaxLevel", description = "캐릭터가 달성한 최대 아이템 레벨 평균을 나타냅니다.", example = "1,649.3")
             @JsonProperty(value = "ItemMaxLevel")
-            String itemMaxLevel
-    ) implements Comparable<CharacterInfo> {
+            String itemMaxLevel) implements Comparable<CharacterInfo> {
 
         @Override
         public int compareTo(CharacterInfo o) {
