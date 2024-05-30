@@ -3,6 +3,7 @@ package com.discord_bot.backend.api.v1.common.util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,6 +53,8 @@ public class DataCrawlerImpl implements DataCrawler {
     @Override
     public String getGameNotices(String searchTitle, String noticeType) {
         String urlString;
+        searchTitle = StringUtils.hasLength(searchTitle) ? URLEncoder.encode(searchTitle, StandardCharsets.UTF_8) : "";
+        noticeType = StringUtils.hasLength(noticeType) ? URLEncoder.encode(noticeType, StandardCharsets.UTF_8) : "";
 
         if (searchTitle.isBlank() && noticeType.isBlank()) {
             urlString = CONTEXT_PATH + NEWS_URL + "/notices";

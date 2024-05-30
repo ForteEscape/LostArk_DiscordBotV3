@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,8 +32,11 @@ public class NoticeController {
             @ApiResponse(responseCode = "500", description = "서버 문제 발생")
     })
     @GetMapping("/notices")
-    public ResponseEntity<?> getNotices() {
-        List<News> latestNotices = noticeService.getLatestNotices();
+    public ResponseEntity<List<News>> getNotices(
+            @RequestParam(value = "searchTitle", required = false) String searchTitle,
+            @RequestParam(value = "filter", required = false) String filter
+    ) {
+        List<News> latestNotices = noticeService.getLatestNotices(searchTitle, filter);
 
         return ResponseEntity.ok(latestNotices);
     }

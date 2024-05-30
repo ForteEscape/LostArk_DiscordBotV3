@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface NoticeService {
 
-    List<News> getLatestNotices();
+    List<News> getLatestNotices(String searchTitle, String filter);
 }
