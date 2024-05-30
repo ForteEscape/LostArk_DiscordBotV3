@@ -1,6 +1,5 @@
 package com.discord_bot.backend.api.v1.common.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -14,7 +13,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Component
-@Slf4j
 public class DataCrawlerImpl implements DataCrawler {
 
     private static final String KEY_PREFIX = "Bearer ";
@@ -36,8 +34,41 @@ public class DataCrawlerImpl implements DataCrawler {
     private String CONTEXT_PATH;
 
     @Override
-    public String getCharacterInfo(String characterName) {
-        String urlString = CONTEXT_PATH + CHARACTER_ARMOR_URL + "?characterName=" + characterName;
+    public String getCharacterProfile(String characterName) { // profile parsing
+        characterName = URLEncoder.encode(characterName, StandardCharsets.UTF_8);
+        String urlString = CONTEXT_PATH + CHARACTER_ARMOR_URL + SEPARATOR + characterName + SEPARATOR + "profiles";
+
+        return parsingData(urlString);
+    }
+
+    @Override
+    public String getCharacterEquipment(String characterName) {
+        characterName = URLEncoder.encode(characterName, StandardCharsets.UTF_8);
+        String urlString = CONTEXT_PATH + CHARACTER_ARMOR_URL + SEPARATOR + characterName + SEPARATOR + "equipment";
+
+        return parsingData(urlString);
+    }
+
+    @Override
+    public String getCharacterCard(String characterName) {
+        characterName = URLEncoder.encode(characterName, StandardCharsets.UTF_8);
+        String urlString = CONTEXT_PATH + CHARACTER_ARMOR_URL + SEPARATOR + characterName + SEPARATOR + "cards";
+
+        return parsingData(urlString);
+    }
+
+    @Override
+    public String getCharacterEngrave(String characterName) {
+        characterName = URLEncoder.encode(characterName, StandardCharsets.UTF_8);
+        String urlString = CONTEXT_PATH + CHARACTER_ARMOR_URL + SEPARATOR + characterName + SEPARATOR + "engravings";
+
+        return parsingData(urlString);
+    }
+
+    @Override
+    public String getCharacterGems(String characterName) {
+        characterName = URLEncoder.encode(characterName, StandardCharsets.UTF_8);
+        String urlString = CONTEXT_PATH + CHARACTER_ARMOR_URL + SEPARATOR + characterName + SEPARATOR + "gems";
 
         return parsingData(urlString);
     }
@@ -59,9 +90,9 @@ public class DataCrawlerImpl implements DataCrawler {
         if (searchTitle.isBlank() && noticeType.isBlank()) {
             urlString = CONTEXT_PATH + NEWS_URL + "/notices";
         } else {
-            if(searchTitle.isBlank()) {
+            if (searchTitle.isBlank()) {
                 urlString = CONTEXT_PATH + NEWS_URL + "/notices?type=" + noticeType;
-            } else if(noticeType.isBlank()) {
+            } else if (noticeType.isBlank()) {
                 urlString = CONTEXT_PATH + NEWS_URL + "/notices?searchText=" + searchTitle;
             } else {
                 urlString = CONTEXT_PATH + NEWS_URL + "/notices?searchText=" + searchTitle + "&type=" + noticeType;
@@ -78,10 +109,7 @@ public class DataCrawlerImpl implements DataCrawler {
 
     private String parsingData(String urlString) {
         try {
-            log.info("url " + urlString);
-
             URL url = new URL(urlString);
-            log.info(url.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestProperty("Authorization", KEY_PREFIX + SERVICE_KEY);
