@@ -15,7 +15,6 @@ import java.util.List;
 @Slf4j
 public class CharacterServiceImpl implements CharacterService {
 
-    private final CharacterMapper characterMapper;
     private final DataCrawler dataCrawler;
     private final JsonParser jsonParser;
 
