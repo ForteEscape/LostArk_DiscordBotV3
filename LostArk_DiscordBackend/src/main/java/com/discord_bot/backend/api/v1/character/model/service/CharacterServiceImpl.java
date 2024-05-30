@@ -1,6 +1,5 @@
 package com.discord_bot.backend.api.v1.character.model.service;
 
-import com.discord_bot.backend.api.v1.character.model.mapper.CharacterMapper;
 import com.discord_bot.backend.api.v1.character.model.vo.CharacterResponse;
 import com.discord_bot.backend.api.v1.common.util.DataCrawler;
 import com.discord_bot.backend.api.v1.common.util.JsonParser;
