@@ -108,7 +108,6 @@ public class DataCrawlerImpl implements DataCrawler {
             return sb.toString();
 
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
