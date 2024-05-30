@@ -143,4 +143,55 @@ public class JsonParserImpl implements JsonParser {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public List<CharacterInfoDetail.GemDetail> parseCharacterGems(String characterGems) {
+        try {
+            JsonNode node = objectMapper.readTree(characterGems);
+
+            JsonNode gems = node.get("Gems");
+            JsonNode effect = node.get("Effects");
+
+            List<int[]> gemsLevel = new ArrayList<>();
+
+            for(int i = 0; i < gems.size(); i++) {
+                JsonNode gemsItem = gems.get(i);
+                int slot = gemsItem.get("Slot").asInt();
+                int level = gemsItem.get("Level").asInt();
+
+                gemsLevel.add(new int[]{slot, level});
+            }
+
+            List<CharacterInfoDetail.Gem> gemList = new ArrayList<>();
+            for (int i = 0; i < effect.size(); i++) {
+                JsonNode effectItem = effect.get(i);
+
+                int gemSlot = effectItem.get("GemSlot").asInt();
+                String name = effectItem.get("Name").asText();
+                String description = effectItem.get("Description").asText();
+
+                gemList.add(new CharacterInfoDetail.Gem(gemSlot, name, description));
+            }
+
+            gemList.sort(Comparator.comparingInt(CharacterInfoDetail.Gem::gemSlot));
+            gemsLevel.sort(Comparator.comparingInt(e -> e[0]));
+
+            List<CharacterInfoDetail.GemDetail> resultList = new ArrayList<>();
+            for(int i = 0; i < gemList.size(); i++) {
+                CharacterInfoDetail.GemDetail item = CharacterInfoDetail.GemDetail.builder()
+                        .gemSlot(gemList.get(i).gemSlot())
+                        .gemLevel(gemsLevel.get(i)[1])
+                        .skillName(gemList.get(i).name())
+                        .description(gemList.get(i).description())
+                        .build();
+
+                resultList.add(item);
+            }
+
+            return resultList;
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

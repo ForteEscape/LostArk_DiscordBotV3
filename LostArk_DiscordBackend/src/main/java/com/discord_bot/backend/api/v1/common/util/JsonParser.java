@@ -20,4 +20,5 @@ public interface JsonParser {
 
     List<CharacterInfoDetail.CharacterEquipments> parseCharacterEquipment(String characterEquipment);
 
+    List<CharacterInfoDetail.GemDetail> parseCharacterGems(String characterGems);
 }
