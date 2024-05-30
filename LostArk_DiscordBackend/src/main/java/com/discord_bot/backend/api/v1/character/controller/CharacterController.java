@@ -38,4 +38,5 @@ public class CharacterController {
         List<CharacterResponse.CharacterInfo> characterList = characterService.getCharacterList(characterName, filter);
         return ResponseEntity.ok(characterList);
     }
+
 }
