@@ -1,12 +1,15 @@
 package com.discord_bot.backend.api.v1.character.model.service;
 
 import com.discord_bot.backend.api.v1.character.model.mapper.CharacterMapper;
+import com.discord_bot.backend.api.v1.character.model.vo.CharacterResponse;
 import com.discord_bot.backend.api.v1.common.util.DataCrawler;
+import com.discord_bot.backend.api.v1.common.util.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,11 +18,12 @@ public class CharacterServiceImpl implements CharacterService {
 
     private final CharacterMapper characterMapper;
     private final DataCrawler dataCrawler;
+    private final JsonParser jsonParser;
 
     @Override
-    public void test() {
-        String result = dataCrawler.getGameNotices("", new String("공지".getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+    public List<CharacterResponse.CharacterInfo> getCharacterList(String characterName, String filter) {
+        String result = dataCrawler.getCharacterGroup(characterName);
 
-        log.info("dataCrawl result : " + result);
+        return jsonParser.parseCharacterGroup(result, filter);
     }
 }
