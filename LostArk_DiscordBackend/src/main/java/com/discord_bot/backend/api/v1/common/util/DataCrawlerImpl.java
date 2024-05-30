@@ -9,12 +9,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @Slf4j
 public class DataCrawlerImpl implements DataCrawler {
 
     private static final String KEY_PREFIX = "Bearer ";
+    private static final String SEPARATOR = "/";
 
     @Value("${api.service-key}")
     private String SERVICE_KEY;
@@ -40,7 +43,8 @@ public class DataCrawlerImpl implements DataCrawler {
 
     @Override
     public String getCharacterGroup(String characterName) {
-        String urlString = CONTEXT_PATH + CHARACTER_URL + "?characterName=" + characterName;
+        characterName = URLEncoder.encode(characterName, StandardCharsets.UTF_8);
+        String urlString = CONTEXT_PATH + CHARACTER_URL + SEPARATOR + characterName + SEPARATOR + "siblings";
 
         return parsingData(urlString);
     }
@@ -74,10 +78,11 @@ public class DataCrawlerImpl implements DataCrawler {
             log.info("url " + urlString);
 
             URL url = new URL(urlString);
+            log.info(url.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestProperty("Authorization", KEY_PREFIX + SERVICE_KEY);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
             conn.setRequestMethod("GET");
 
             int responseCode = conn.getResponseCode();
